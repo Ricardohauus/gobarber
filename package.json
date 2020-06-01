@@ -1,0 +1,15 @@
+{
+    "name": "gobarber",
+    "version": "1.0.0",
+    "description": "Barber System",
+    "main": "index.js",
+    "author": "Ricardo Brasil",
+    "license": "MIT",
+    "private": false,
+    "dependencies": {
+        "express": "^4.17.1"
+    },
+    "devDependencies": {
+        "nodemon": "^2.0.4"
+    }
+}
