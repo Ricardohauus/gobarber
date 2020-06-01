@@ -6,6 +6,9 @@
     "author": "Ricardo Brasil",
     "license": "MIT",
     "private": false,
+    "scripts": {
+        "dev": "nodemon src/server.js"
+    },
     "dependencies": {
         "express": "^4.17.1"
     },
