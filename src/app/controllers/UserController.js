@@ -9,6 +9,25 @@ class UserController {
         const { name, email, id, provider } = await User.create(req.body);
         return res.json({ id, name, email, provider });
     }
+
+    async update(req, res) {
+        const { email, oldPassword } = req.body;
+        const user = await User.findByPk(req.userId);
+        if (email !== user.email) {
+            const userExists = await User.findOne({
+                where: { email },
+            });
+            if (userExists) {
+                return res.status(400).json({ error: 'Email já cadastrado!' });
+            }
+        }
+        if (oldPassword && !(await user.checkPassword(oldPassword))) {
+            return res.status(400).json({ error: 'Senha incorreta!' });
+        }
+
+        const { name, id, provider } = await user.update(req.body);
+        return res.json({ id, name, email, provider });
+    }
 }
 
 export default new UserController();
