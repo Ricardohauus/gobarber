@@ -1,6 +1,8 @@
 import Appointment from '../models/Appointment';
 import * as Yup from 'yup';
 import User from '../models/User';
+import { startOfHour, parseISO, isBefore } from 'date-fns';
+
 class AppointmentController {
     async store(req, res) {
         const schema = Yup.object().shape({
@@ -20,13 +22,34 @@ class AppointmentController {
         if (!isProvider)
             return res
                 .status(401)
-                .json({ error: 'Você não pode criar agendamentos com este usuário ' });
+                .json({ error: 'Você não pode criar agendamentos com este usuário!' });
+
+        const hourStart = startOfHour(parseISO(date));
+
+        if (isBefore(hourStart, new Date())) {
+            return res
+                .status(400)
+                .json({ error: 'Horários no passado não são permitidos!' });
+        }
+
+        const checkAvailability = await Appointment.findOne({
+            where: {
+                provider_id,
+                canceled_at: null,
+                date: hourStart,
+            },
+        });
+
+        if (checkAvailability) {
+            return res.status(400).json({ error: 'Horário não disponivel!' });
+        }
 
         const appointment = await Appointment.create({
             user_id: req.userId,
             provider_id,
             date,
         });
+
         return res.json(appointment);
     }
 }
