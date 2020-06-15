@@ -49,6 +49,11 @@ class AppointmentController {
                 .status(401)
                 .json({ error: 'Você não pode criar agendamentos com este usuário!' });
 
+        if (provider_id == req.userId)
+            return res
+                .status(401)
+                .json({ error: 'Você não pode criar agendamentos para você mesmo!' });
+
         const hourStart = startOfHour(parseISO(date));
 
         if (isBefore(hourStart, new Date())) {
