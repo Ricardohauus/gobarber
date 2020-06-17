@@ -49,7 +49,9 @@ class AppointmentController {
         if (!isProvider)
             return res
                 .status(401)
-                .json({ error: 'Você não pode criar agendamentos com este usuário!' });
+                .json({
+                    error: 'Você não pode criar agendamentos para este usuário, pois ele não é um prestador de serviços',
+                });
 
         if (provider_id == req.userId)
             return res
