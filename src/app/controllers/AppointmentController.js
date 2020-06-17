@@ -14,7 +14,7 @@ class AppointmentController {
         const appointments = await Appointment.findAll({
             where: { user_id: req.userId, canceled_at: null },
             order: ['date'],
-            attributes: ['id', 'date'],
+            attributes: ['id', 'date', 'past', 'cancelable'],
             limit: 20,
             offset: (page - 1) * 20,
             include: [{
@@ -47,11 +47,9 @@ class AppointmentController {
         });
 
         if (!isProvider)
-            return res
-                .status(401)
-                .json({
-                    error: 'Você não pode criar agendamentos para este usuário, pois ele não é um prestador de serviços',
-                });
+            return res.status(401).json({
+                error: 'Você não pode criar agendamentos para este usuário, pois ele não é um prestador de serviços',
+            });
 
         if (provider_id == req.userId)
             return res
